@@ -7,11 +7,20 @@
     <title>Demo pipeline</title>
 </head>
 <body>
-<section class="section">
-    <div class="container">
-        <h1 class="title">Demo pipeline TEST stage</h1>
-        <p class="subtitle">Today is {{format_date}}</p>
-    </div>
-</section>
+    <section class="section">
+        <div class="container p-3">
+            <h1 class="title">Demo pipeline TEST stage</h1>
+            <p class="subtitle">Today is {{context.format_date}}</p>
+        </div>
+        <div class="container p-3">
+            <form method="get">
+                <input name="name-input" placeholder="Enter your name" />
+                <button id="name-submit" type="submit">Submit</button>
+            </form>
+        </div>
+        <div class="container p-3">
+            <p class="subtitle" id="greeting">Hello {{context.name}}!</p>
+        </div>
+    </section>
 </body>
 </html>
