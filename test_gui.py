@@ -10,7 +10,9 @@ DRIVER_SERVICE = webdriver.FirefoxService()
 
 class TestFlaskGui(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Firefox(service=DRIVER_SERVICE)
+        options = webdriver.FirefoxOptions()
+        options.add_argument("-headless")
+        self.driver = webdriver.Firefox(service=DRIVER_SERVICE, options=options)
         self.driver.implicitly_wait(1)
         self.addCleanup(self.driver.quit)
 
