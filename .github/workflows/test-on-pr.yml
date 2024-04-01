@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set up Chromium
+      uses: browser-actions/setup-chrome@v1.5.0
     - uses: actions/checkout@v4
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
@@ -32,5 +34,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Run the Flask dev server
+      run: python -m flask --app eggs.py run &
     - name: Run all tests
-      run: python test_business_logic.py test_gui.py
+      run: python test_business_logic.py && python test_gui.py
