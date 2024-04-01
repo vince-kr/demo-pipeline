@@ -16,6 +16,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set up Chromium
+      uses: browser-actions/setup-chrome@v1.5.0
+    - name: Start Selenoid Server
+      uses: Xotabu4/selenoid-github-action@v2
     - uses: actions/checkout@v4
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
