@@ -20,10 +20,8 @@ class TestFlaskGui(unittest.TestCase):
         """Create the webdriver"""
         driver_options = ChromiumOptions()
         driver_options.add_argument("--headless=new")
-        self.driver = webdriver.Remote(
-                command_executor="http://localhost:4444/wd/hub",
-                options=driver_options
-                )
+        self.driver = webdriver.Chrome(service=DRIVER_SERVICE,
+                                       options=driver_options)
         self.driver.implicitly_wait(1)
         self.addCleanup(self.driver.quit)
 
