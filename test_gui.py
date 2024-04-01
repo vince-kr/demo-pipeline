@@ -1,18 +1,27 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromiumService
+from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
+
 import unittest
 
 
 # Setup
-TEST_SYSTEM = "localhost:5000"
-DRIVER_SERVICE = webdriver.FirefoxService()
+TEST_SYSTEM = "http://localhost:5000"
+DRIVER_SERVICE = ChromiumService(
+        ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+        )
 
 
 class TestFlaskGui(unittest.TestCase):
     def setUp(self):
-        options = webdriver.FirefoxOptions()
-        options.add_argument("-headless")
-        self.driver = webdriver.Firefox(service=DRIVER_SERVICE, options=options)
+        """Create the webdriver"""
+        driver_options = ChromiumOptions()
+        driver_options.add_argument("--headless=new")
+        self.driver = webdriver.Chrome(service=DRIVER_SERVICE,
+                                       options=driver_options)
         self.driver.implicitly_wait(1)
         self.addCleanup(self.driver.quit)
 
@@ -20,36 +29,16 @@ class TestFlaskGui(unittest.TestCase):
         """Assert that the app is accessible at the expected URL"""
         self.driver.get(TEST_SYSTEM)
 
-    def test_givenAppHomepage_beforeUserTakesAction_thenDefaultGreeting(self):
-        """Assert that homepage displays the default greeting"""
+    def test_givenAppHomepage_thenLinkToOrderReportExists(self):
+        """Assert that a link to the Order report exists"""
         d = self.driver
         d.get(TEST_SYSTEM)
 
-        # Assert value of msg before user action
-        message = d.find_element(by=By.ID, value="greeting")
-        expected = "Hello there!"
-        actual = message.text
-        self.assertEqual(expected, actual)
-
-    def test_givenAppHomepage_whenUserEntersName_thenIsGreeted(self):
-        """Assert that greeting reflects a user's submitted name"""
-        d = self.driver
-        d.get(TEST_SYSTEM)
-
-        # Get page elements
-        name_input = d.find_element(by=By.NAME, value="name-input")
-        submit_button = d.find_element(by=By.ID, value="name-submit")
-
-        # Take action
-        test_msg = "Test value with spaces"
-        name_input.send_keys(test_msg)
-        submit_button.click()
-
-        # Assert value of msg after user interaction
-        message = d.find_element(by=By.ID, value="greeting")
-        expected = f"Hello {test_msg}!"
-        actual = message.text
-        self.assertEqual(expected, actual)
+        # Assert that the link to the order report ends in 'report'
+        order_report_link = d.find_element(by=By.LINK_TEXT,
+                                           value="Order report")
+        link_href_attr = order_report_link.get_attribute("href")
+        self.assertTrue(link_href_attr.endswith("report"))
 
 
 if __name__ == "__main__":
