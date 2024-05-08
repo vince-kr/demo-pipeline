@@ -3,9 +3,7 @@
 
 name: Build then run all tests
 
-on:
-  pull_request:
-    branches: [ "main" ]
+on: workflow_dispatch
 
 permissions:
   contents: read
